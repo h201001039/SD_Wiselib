@@ -1,6 +1,5 @@
     #include <stdint.h>
     #include <stddef.h>
-    #include <string.h>
     #ifndef __SD_FILE_SYSTEM_LIBRARY_H__
     #define __SD_FILE_SYSTEM_LIBRARY_H__
      
