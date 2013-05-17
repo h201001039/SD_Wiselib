@@ -1,0 +1,253 @@
+    #include <stdint.h>
+    #include <stddef.h>
+    #include <string.h>
+    #ifndef __SD_FILE_SYSTEM_LIBRARY_H__
+    #define __SD_FILE_SYSTEM_LIBRARY_H__
+     
+    class File
+    {
+            public:
+                    File(const char *n);
+                    File(void);
+                    //Write data to the file. Here template is used so that
+                    //user can write data of any datatype.
+                    template<typename T> size_t write(T *buf, size_t size);
+                    //Read a byte from the file and return the next byte.
+                    int read();
+                    //Read a byte from the file without advancing to the next one
+                    int peek();
+                    //Check if there are any bytes available for reading from the file.
+                    int available();
+                    //Seek to a new position in the file,
+                    //which must be between the start and end of the file.
+                    bool seek(unsigned int pos);
+                    //Get the current position within the file.
+                    unsigned int position();
+                    //Get the size of the file.
+                    unsigned int size();
+                    //Close the file, and ensure that any data written
+                    //to it is physically saved to theSD card.
+                    void close();
+                    //Report if current file is directory or not.
+                    bool is_directory(void);
+                    //Reports the next file or folder in a directory.
+                    File* open_next_file(uint8_t mode);
+                    //Bring back to the first file in the directory.
+                    void rewind_directory(void);
+                    char *name();
+            private:
+                    char name_[13];
+                    friend class SdFileSystemLibrary;
+                    int file_open_mode;
+    };
+     
+    class SdFileSystemLibrary
+    {
+            public:
+                    //Initializes the SD library and card.
+                    bool begin();
+                    //Open a file on the SD card.Return object of File type.
+                    File open(const char *filename, uint8_t mode);
+                    //Test if file or directory exists on SD card
+                    bool exists(const char *filepath);
+                    //Create a directory on SD card.
+                    bool mkdir(const char *filepath);
+                    //Remove a file from SD card.
+                    bool remove(const char *filepath);
+                    //Remove a directory from SD card.
+                    bool rmdir(const char *filepath);
+            private:
+                    int file_open_mode_;          
+                    File file_;
+    };            
+    #endif
+    bool SdFileSystemLibrary::begin()
+    {
+            //Code goes here...
+            //Initializes the SD library and card.
+            //Will return true for success and false for failure.
+            return false;
+    }
+    // --------------------------------------------------------------------
+    File SdFileSystemLibrary::open(const char *filename, uint8_t mode)
+    {
+            File f(filename);
+            f.file_open_mode= mode;//as SdFileSystemLibrary is friend class for File class.
+            //Here only for now,I have created a new file,later this method  
+            //will open the supplied file path for reading or writing(append also).
+            //If the file does not exist and it is opened for writing,the file
+            //will be created.
+        return f;
+    }
+    // --------------------------------------------------------------------
+    bool SdFileSystemLibrary::exists(const char *filepath)
+    {
+            //Code goes here...
+            //Test if file or directory exists on SD card.
+            //Will return true for success and false for failure.
+            return true;
+    }
+    // --------------------------------------------------------------------
+    bool SdFileSystemLibrary::mkdir(const char *filepath)
+    {
+            //Code goes here...
+            //Create a directory on SD card.
+            //Will return true for success and false for failure.
+            return true;
+    }
+    // --------------------------------------------------------------------
+    bool SdFileSystemLibrary::remove(const char *filepath)
+    {
+            //Code goes here...
+            //Remove a file from SD card.
+            //Will return true for success and false for failure.
+            return true;
+    }
+    // --------------------------------------------------------------------
+    bool SdFileSystemLibrary::rmdir(const char *filepath)
+    {
+            //Code goes here...
+            //Remove a directory from SD card.
+            //Will return true for success and false for failure.
+            return true;
+    }
+    File::File(const char *n)
+    {
+      int i=0;
+        //strncpy(name_, n, 12);
+        while(i<12 && n[i]!=0)
+        {
+        name_[i]=n[i];
+        i++;
+        }
+        name_[i]='\0';      
+    }
+    // --------------------------------------------------------------------
+    File::File(void)
+    {
+            name_[0]=0;
+    }
+    // --------------------------------------------------------------------
+    template <typename T > size_t File::write(T *buf, size_t size)
+    {
+            size_t s=size;
+            //Code goes here...
+            return s;
+    }
+    // --------------------------------------------------------------------
+    int File::read()
+    {
+            //Code goes here...
+            //This function will return the next byte.
+            return 1;      
+    }
+    // --------------------------------------------------------------------
+    int File::peek()
+    {
+            //Code goes here...
+            //It will return the next byte.This will be differ from  
+            //read function as it will read a byte from the file  
+            //without advancing to the next one.
+            return 1;
+    }
+    // --------------------------------------------------------------------
+    int File::available()
+    {
+            //Code goes here...
+            //it will check if there are any bytes available for
+            //reading from the file and return the the number of
+            //bytes available
+            return 1;
+    }
+    // --------------------------------------------------------------------
+    bool File::seek(unsigned int pos)
+    {
+            //Code goes here...
+            //Seek to a new position in the file, which must be
+            //between 0 and the size of the file
+            //Will return true for success and false for failure.
+            return true;
+    }
+    // --------------------------------------------------------------------
+    unsigned int File::position()
+    {
+            //Code goes here...
+            //It will give the current position within the file.
+            return 1;
+    }
+    // --------------------------------------------------------------------
+    unsigned int File::size()
+    {
+            //Code goes here...
+            //It will give the size of the file in bytes.
+            return 10;
+    }
+    // --------------------------------------------------------------------
+    void File::close()
+    {
+            //Code goes here...
+            //Close the file, and ensure that any data
+            // written to it is physically saved to theSD card.
+    }
+    // --------------------------------------------------------------------
+    bool File::is_directory(void)
+    {
+            //Code goes here...
+            //Return true if file is directory otherwise false.
+            return false;
+    }
+    // --------------------------------------------------------------------
+    File* File::open_next_file(uint8_t mode)
+    {
+            //Code goes here...
+            //This function will reports the next file or folder
+            //in a directory.This would be done by iterating through
+            //directory entries and reporting the next file or
+            //folder in the directory.
+            return this;
+    }
+    // --------------------------------------------------------------------
+    void File::rewind_directory(void)
+    {
+            //Code goes here...
+            //This will bring back to the first file in the directory.
+    }
+    // --------------------------------------------------------------------
+    char* File::name()
+    {
+    return name_;
+    }
+     
+    void setup()
+    {
+            Serial.begin(9600);
+            Serial.println("hello");
+            SdFileSystemLibrary sd;
+            File f=sd.open("harsh",1);
+            Serial.print("Name of created file is ");
+            Serial.println(f.name());
+            if(sd.mkdir("/Home"))
+            {
+            int d=1;
+            Serial.println("Hurrey!! I have created a directory");
+            Serial.print("Size of file harsh is ");
+            Serial.println(f.size());
+            }
+           File *x=f.open_next_file(1);
+           
+            if((x->is_directory()))
+            {
+            int f=1;
+            Serial.println("next file of harsh is a directory ");
+            }
+                  else
+            {
+            Serial.println("next file of harsh is not a directory ");
+            }
+         
+     
+    }
+     
+    void loop()
+    {}
+

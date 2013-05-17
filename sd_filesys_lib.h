@@ -33,7 +33,7 @@ class File
 		File* open_next_file(uint8_t mode);
 		//Bring back to the first file in the directory.
 		void rewind_directory(void);
-		
+		char *name();
 	private:
 		char name_[13];
 		friend class SdFileSystemLibrary;

@@ -5,6 +5,7 @@ int main()
 	std::cout  << std::endl;
 	SdFileSystemLibrary sd;
 	File f=sd.open("harsh",1);
+	std::cout << "Name of created file is " << f.name() <<std::endl;
 	if(sd.mkdir("/Home"))
 	std::cout << "Hurrey!! I have created a directory.;)" << std::endl;
 	std::cout << "Size of file harsh is "<<f.size()  << std::endl;

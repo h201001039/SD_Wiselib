@@ -3,7 +3,14 @@
 File::File(const char *n)
 {
     //strncpy(name_, n, 12);
-    name_[12]=0;	
+	int i=0;
+	while(i<12 && n[i]!=0)
+		{
+		name_[i]=n[i];
+		i++;
+		}
+	name_[i]='\0';
+		
 }
 // --------------------------------------------------------------------
 File::File(void)
@@ -94,4 +101,9 @@ void File::rewind_directory(void)
 {
 	//Code goes here...
 	//This will bring back to the first file in the directory.
+}
+// --------------------------------------------------------------------
+char* File::name()
+{
+	return name_;
 }
