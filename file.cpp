@@ -1,6 +1,8 @@
 #include "sd_filesys_lib.h"
 //#include <string.h>
-File::File(const char *n)
+namespace wiselib
+{
+template <typename OsModel_P> File<OsModel_P>::File(const char *n)
 {
     //strncpy(name_, n, 12);
 	int i=0;
@@ -13,26 +15,27 @@ File::File(const char *n)
 		
 }
 // --------------------------------------------------------------------
-File::File(void)
+template <typename OsModel_P>File<OsModel_P>::File(void)
 {
 	name_[0]=0;
 }
 // --------------------------------------------------------------------
-template <typename T > size_t File::write(T *buf, size_t size)
+template <typename OsModel_P> typename File<OsModel_P>::size_t
+File<OsModel_P>::write(File<OsModel_P>::block_data_t *buf,File<OsModel_P>::size_t size)
 {
 	size_t s=size;
 	//Code goes here...
 	return s;
 }
 // --------------------------------------------------------------------
-int File::read()
+template <typename OsModel_P> typename File<OsModel_P>::size_t File<OsModel_P>::read()
 {
 	//Code goes here...
 	//This function will return the next byte.
 	return 1;	
 }
 // --------------------------------------------------------------------
-int File::peek()
+template <typename OsModel_P> int File<OsModel_P>::peek()
 {
 	//Code goes here...
 	//It will return the next byte.This will be differ from  
@@ -41,7 +44,7 @@ int File::peek()
 	return 1;
 }
 // --------------------------------------------------------------------
-int File::available()
+template <typename OsModel_P> int File<OsModel_P>::available()
 {
 	//Code goes here...
 	//it will check if there are any bytes available for 
@@ -50,7 +53,7 @@ int File::available()
 	return 1; 
 }
 // --------------------------------------------------------------------
-bool File::seek(unsigned int pos)
+template <typename OsModel_P> bool File<OsModel_P>::seek(unsigned int pos)
 {
 	//Code goes here...
 	//Seek to a new position in the file, which must be 
@@ -59,35 +62,35 @@ bool File::seek(unsigned int pos)
 	return true;
 }
 // --------------------------------------------------------------------
-unsigned int File::position()
+template <typename OsModel_P> unsigned int File<OsModel_P>::position()
 {
 	//Code goes here...
 	//It will give the current position within the file.
 	return 1;
 }
 // --------------------------------------------------------------------
-unsigned int File::size()
+template <typename OsModel_P> unsigned int File<OsModel_P>::size()
 {
 	//Code goes here...
 	//It will give the size of the file in bytes.
 	return 10;
 }
 // --------------------------------------------------------------------
-void File::close()
+template <typename OsModel_P> void File<OsModel_P>::close()
 {
 	//Code goes here...
 	//Close the file, and ensure that any data 
 	// written to it is physically saved to theSD card.
 }
 // --------------------------------------------------------------------
-bool File::is_directory(void)
+template <typename OsModel_P> bool File<OsModel_P>::is_directory(void)
 {
 	//Code goes here...
 	//Return true if file is directory otherwise false.
 	return false;
 }
 // --------------------------------------------------------------------
-File* File::open_next_file(uint8_t mode)
+template <typename OsModel_P> File<OsModel_P>* File<OsModel_P>::open_next_file(uint8_t mode)
 {
 	//Code goes here...
 	//This function will reports the next file or folder 
@@ -97,13 +100,15 @@ File* File::open_next_file(uint8_t mode)
 	return this;
 }
 // --------------------------------------------------------------------
-void File::rewind_directory(void)
+template <typename OsModel_P> void File<OsModel_P>::rewind_directory(void)
 {
 	//Code goes here...
 	//This will bring back to the first file in the directory.
 }
 // --------------------------------------------------------------------
-char* File::name()
+template <typename OsModel_P> char* File<OsModel_P>::name()
 {
 	return name_;
+}
+ template class File< PCOsModel >;
 }

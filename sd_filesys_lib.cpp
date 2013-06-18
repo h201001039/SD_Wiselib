@@ -1,5 +1,7 @@
 #include "sd_filesys_lib.h"
-bool SdFileSystemLibrary::begin()
+namespace wiselib
+{
+template <typename OsModel_P> bool SdFileSystemLibrary<OsModel_P>::begin()
 {
 	//Code goes here...
 	//Initializes the SD library and card.
@@ -7,18 +9,7 @@ bool SdFileSystemLibrary::begin()
 	return false;
 }
 // --------------------------------------------------------------------
-File SdFileSystemLibrary::open(const char *filename, uint8_t mode)
-{
-	File f(filename);
-	f.file_open_mode= mode;//as SdFileSystemLibrary is friend class for File class.
-	//Here only for now,I have created a new file,later this method  
-	//will open the supplied file path for reading or writing(append also).
-	//If the file does not exist and it is opened for writing,the file
-	//will be created.
-    return f;
-}
-// --------------------------------------------------------------------
-bool SdFileSystemLibrary::exists(const char *filepath)
+template <typename OsModel_P> bool SdFileSystemLibrary<OsModel_P>::exists(const char *filepath)
 {
 	//Code goes here...
 	//Test if file or directory exists on SD card.
@@ -26,7 +17,7 @@ bool SdFileSystemLibrary::exists(const char *filepath)
 	return true;
 }
 // --------------------------------------------------------------------
-bool SdFileSystemLibrary::mkdir(const char *filepath)
+template <typename OsModel_P> bool SdFileSystemLibrary<OsModel_P>::mkdir(const char *filepath)
 {
 	//Code goes here...
 	//Create a directory on SD card.
@@ -34,7 +25,7 @@ bool SdFileSystemLibrary::mkdir(const char *filepath)
 	return true;
 }
 // --------------------------------------------------------------------
-bool SdFileSystemLibrary::remove(const char *filepath)
+template <typename OsModel_P> bool SdFileSystemLibrary<OsModel_P>::remove(const char *filepath)
 {
 	//Code goes here...
 	//Remove a file from SD card.
@@ -42,10 +33,12 @@ bool SdFileSystemLibrary::remove(const char *filepath)
 	return true;
 }
 // --------------------------------------------------------------------
-bool SdFileSystemLibrary::rmdir(const char *filepath)
+template <typename OsModel_P> bool SdFileSystemLibrary<OsModel_P>::rmdir(const char *filepath)
 {
 	//Code goes here...
 	//Remove a directory from SD card.
 	//Will return true for success and false for failure.
 	return true;
+}
+template class SdFileSystemLibrary< PCOsModel >;
 }

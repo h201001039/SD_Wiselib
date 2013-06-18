@@ -2,17 +2,22 @@
 #include <stddef.h>
 #ifndef __SD_FILE_SYSTEM_LIBRARY_H__
 #define __SD_FILE_SYSTEM_LIBRARY_H__
-
+namespace wiselib
+{
+template<typename OsModel_P>
 class File
 {
 	public:
+		typedef OsModel_P OsModel;
+		typedef typename OsModel_P::size_t size_t;
+		typedef typename OsModel_P::block_data_t block_data_t;
 		File(const char *n);
 		File(void);
 		//Write data to the file. Here template is used so that
 		//user can write data of any datatype.
-		template<typename T> size_t write(T *buf, size_t size);
+		size_t write(block_data_t *buf, size_t size);
 		//Read a byte from the file and return the next byte.
-		int read();
+		size_t read();
 		//Read a byte from the file without advancing to the next one
 		int peek();
 		//Check if there are any bytes available for reading from the file. 
@@ -36,17 +41,27 @@ class File
 		char *name();
 	private:
 		char name_[13];
-		friend class SdFileSystemLibrary;
+		//friend class SdFileSystemLibrary;
 		int file_open_mode;
 };
 
-class SdFileSystemLibrary
+template<typename OsModel_P> class SdFileSystemLibrary
 {
 	public:
+		typedef OsModel_P OsModel;
 		//Initializes the SD library and card.
 		bool begin();
 		//Open a file on the SD card.Return object of File type.
-		File open(const char *filename, uint8_t mode);
+		File<OsModel> open(const char *filename, uint8_t mode)
+		{
+		File<OsModel> f(filename);
+		//f.file_open_mode= mode;//as SdFileSystemLibrary is friend class for File class.
+		//Here only for now,I have created a new file,later this method  
+		//will open the supplied file path for reading or writing(append also).
+		//If the file does not exist and it is opened for writing,the file
+		//will be created.
+		return f;	
+		}
 		//Test if file or directory exists on SD card
 		bool exists(const char *filepath);
 		//Create a directory on SD card.
@@ -57,6 +72,7 @@ class SdFileSystemLibrary
 		bool rmdir(const char *filepath);
 	private:
 		int file_open_mode_;		
-		File file_;
-};		
+		// File<OsModel> file_;
+};
+}		
 #endif
