@@ -10,8 +10,6 @@ int main()
 	wiselib::SdFileSystemLibrary<Os> sd;
 	wiselib::File<Os> f=sd.open("harsh",1);
 	std::cout << "Name of created file is " << f.name() <<std::endl;
-	if(sd.mkdir("/Home"))
-	std::cout << "Hurrey!! I have created a directory.;)" << std::endl;
 	std::cout << "Size of file harsh is "<<f.size()  << std::endl;
 	wiselib::File<Os> *x=f.open_next_file(1);
 	if((x->is_directory()))
