@@ -4,8 +4,6 @@
 #ifndef __SD_FILE_SYSTEM_LIBRARY_H__
 #define __SD_FILE_SYSTEM_LIBRARY_H__
 #include "pc_os_model.h"
-    
-
 namespace wiselib
 {
 template<typename OsModel_P,typename BlockMemory_P = typename OsModel_P::BlockMemory>
@@ -16,14 +14,15 @@ class File
 		typedef typename OsModel::size_t size_t;
 		typedef typename OsModel::block_data_t block_data_t;
 		typedef BlockMemory_P BlockMemory;
-		File(const char *n) {
+		File(const char *n, unsigned int file_cluster_no) {
 		//strncpy(name_, n, 12);
 		int i=0;
 		while(i<12 && n[i]!=0) {
 			name_[i]=n[i];
 			i++;
 			}
-		name_[i]='\0';	
+		name_[i]='\0';
+		file_cluster_no=cluster_no;	
 		}
 		File(void){
 		name_[0]=0;	
@@ -104,6 +103,7 @@ class File
 		//friend class SdFileSystemLibrary;
 		int file_open_mode;
 		BlockMemory fd;
+		unsigned int file_cluster_no;
 		
 };
 template<typename OsModel_P,typename BlockMemory_P = typename OsModel_P::BlockMemory>
@@ -334,13 +334,22 @@ class SdFileSystemLibrary
 		ThisFATEntOffset = FATOffset % b1.BPB_BytsPerSec;
 		fd.read(buffer1,ThisFATSecNum);
 		return ThisFATEntOffset;
-		}
 //-----------------------------------------------------------------------
+		}
 		void set_fat_entry(int N,unsigned int value) 
 		{
 		//block_data_t buffer1[512];
 		//unsigned int x=get_fat_entry(N,buffer1);
 		
+		}
+		char open(const char *name)
+		{
+		//search for the file in root entries and if found create file object 
+		//pointing to that clusture otherwise create new file and return file object
+		//pointing to new clusture
+		
+		File *f=new file(name,0);
+		return f;
 		}
 		private:
 			block_data_t buffer[512];
@@ -350,7 +359,7 @@ class SdFileSystemLibrary
 			BlockMemory fd;
 			
 };
-		void open()
+
 }
 		
 #endif
