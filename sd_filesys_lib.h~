@@ -14,7 +14,7 @@ class File
 		typedef typename OsModel::size_t size_t;
 		typedef typename OsModel::block_data_t block_data_t;
 		typedef BlockMemory_P BlockMemory;
-		File(const char *n, unsigned int file_cluster_no) {
+		File(const char *n, unsigned int cluster_no) {
 		//strncpy(name_, n, 12);
 		int i=0;
 		while(i<12 && n[i]!=0) {
@@ -193,7 +193,7 @@ class SdFileSystemLibrary
 			//int a=fd.read(buffer,0);
 			
 			printf("harsh\n");
-			 int a=fd.read(buffer,0);
+			 int a=fd.read(buffer,135);
 			for(i=0;i<512;i++)
 			{
 			printf("%x  ",buffer[i]);
@@ -348,7 +348,7 @@ class SdFileSystemLibrary
 		//pointing to that clusture otherwise create new file and return file object
 		//pointing to new clusture
 		
-		File *f=new file(name,0);
+		File<OsModel> f(name,0);
 		return f;
 		}
 		private:
