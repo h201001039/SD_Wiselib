@@ -25,7 +25,7 @@ class File
                 file_cluster_no=cluster_no;     
                 }
                 File(BlockMemory& bm) : fd(bm) {
-                name_[0]=0;     
+                name_[0]=0;
                 }
                 size_t write(block_data_t *buf, size_t size) {
                 size_t s=size;
@@ -34,7 +34,7 @@ class File
                 }
                 size_t read(block_data_t *buf, size_t size) {
                 
-                return 1;
+                return size;
                 }
                 
                 int peek() {
@@ -134,7 +134,7 @@ class SdFileSystemLibrary
                         unsigned int FATOffset;
                         unsigned int ThisFATSecNum;
                         unsigned int ThisFATEntOffset;
-                        unsigned int FirstRootDirSecNum;
+                        unsigned long FirstRootDirSecNum;
                         
                         typedef struct BPB_P
          {
@@ -186,22 +186,22 @@ class SdFileSystemLibrary
                         TotSec=0;
                         DataSec=0;
                         int i=0;
-                        fd.init("virtual_sd.img");
+                        fd.init("/home/mindfuck/virtual_sd.img");
                         for(i=0;i<512;i++)
                         buffer[i]=0;
                         //int a=fd.read(buffer,0);
                         
-                        printf("harsh\n");
-                         int a=fd.read(buffer,135);
-                        for(i=0;i<512;i++)
-                        {
-                        printf("%x  ",buffer[i]);
-                        if(i%16==0 && i!=0)
-                        printf("\n");
-                }
+                       // printf("harsh\n");
+                         int a=fd.read(buffer,0);
+                        //for(i=0;i<512;i++)
+                        //{
+                        //printf("%x  ",buffer[i]);
+                        //if(i%16==0 && i!=0 &&i!=16 || i==15)
+                        //printf("\n");
+                //}
                         if(a==1)
                         {
-                        printf("harsh\n");
+                        printf("\nsuccesfull read\n");
                         for(i=0;i<3;i++)
                         b1.BS_jmpBoot[i]=buffer[i];
                         for(i=3;i<11;i++)
@@ -213,7 +213,7 @@ class SdFileSystemLibrary
                         b1.BPB_SecPerClus=buffer[13];
                         printf("b1.BPB_SecPerClus=%d\n",b1.BPB_SecPerClus);
                         b1.BPB_RsvdSecCnt=buffer[15]*256+buffer[14];
-                        printf("b1.BPB_RsvdSecCnt=%d",b1.BPB_RsvdSecCnt);
+                        printf("b1.BPB_RsvdSecCnt=%d\n",b1.BPB_RsvdSecCnt);
                         b1.BPB_NumFATs=buffer[16];
                         printf("b1.BPB_NumFATs=%d\n",b1.BPB_NumFATs);
                         b1.BPB_RootEntCnt=buffer[18]*256+buffer[17];
@@ -229,7 +229,7 @@ class SdFileSystemLibrary
                         b1.BPB_NumHeads=buffer[27]*256+buffer[26];
                         printf("b1.BPB_NumHeads=%d\n  ",b1.BPB_NumHeads);
                         b1.BPB_HiddSec=((buffer[31]*256+buffer[30])*256+buffer[29])*256+buffer[28];
-                        printf("b1.BPB_HiddSec=%d\n  ",b1.BPB_HiddSec);
+                       printf("b1.BPB_HiddSec=%d\n  ",b1.BPB_HiddSec);
                         b1.BPB_TotSec32=((buffer[35]*256+buffer[34])*256+buffer[33])*256+buffer[32];
                         printf("b1.BPB_TotSec32=%d\n  ",b1.BPB_TotSec32);
                         b2.BS_DrvNum=buffer[36];
@@ -274,9 +274,9 @@ class SdFileSystemLibrary
                         FATSz = b1.BPB_FATSz16;
                         else
                         FATSz = b3.BPB_FATSz32;
-                        printf("FATSz=%d\n",FATSz);
+                        //printf("FATSz=%d\n",FATSz);
                         FirstDataSector = b1.BPB_RsvdSecCnt + (b1.BPB_NumFATs * FATSz) + RootDirSectors;
-                        printf("FirstDataSector=%d\n",FirstDataSector);
+                       printf("FirstDataSector=%d\n",FirstDataSector);
                         if(b1.BPB_TotSec16 != 0)
                         TotSec = b1.BPB_TotSec16;
                         else
