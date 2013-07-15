@@ -1,9 +1,9 @@
 /*
  * Simple Wiselib Example
  */
-#include "/home/mindfuck/wiselib/wiselib.testing/external_interface/pc/pc_os_model.h"
-#include "/home/mindfuck/wiselib/wiselib.testing/external_interface/pc/pc_wiselib_application.h"
-#include "/home/mindfuck/wiselib/wiselib.stable/external_interface/external_interface.h"
+#include "external_interface/pc/pc_os_model.h"
+#include "external_interface/pc/pc_wiselib_application.h"
+#include "wiselib.stable/external_interface/external_interface.h"
 #include "/home/mindfuck/SD_Wiselib/sd_filesys_lib.h"
 
 typedef wiselib::PCOsModel Os;
