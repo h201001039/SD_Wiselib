@@ -1,11 +1,21 @@
 #include <stdint.h>
 #include <stddef.h>
 //#include "file_block_memory.h"
+#define IsUpper(c)	(((c)>='A')&&((c)<='Z'))
+#define IsLower(c)	(((c)>='a')&&((c)<='z'))
 #ifndef __SD_FILE_SYSTEM_LIBRARY_H__
 #define __SD_FILE_SYSTEM_LIBRARY_H__
 #include "pc_os_model.h"
 namespace wiselib
 {
+unsigned char fs_type;	/* FAT sub type */
+unsigned char csize;	/* Number of sectors per cluster */
+unsigned int n_rootdir;	/* Number of root directory entries (0 on FAT32) */
+unsigned long n_fatent;	/* Number of FAT entries (= number of clusters + 2) */
+unsigned long fatbase;	/* FAT start sector */
+unsigned long dirbase;	/* Root directory start sector (Cluster# on FAT32) */
+unsigned long database;	/* Data start sector */
+
 template<typename OsModel_P,typename BlockMemory_P = typename OsModel_P::BlockMemory>
 class File
 {
@@ -103,6 +113,12 @@ class File
                 int file_open_mode;
                 BlockMemory& fd;
                 unsigned int file_cluster_no;
+                unsigned long fptr; 		/* File R/W pointer */
+                unsigned long fsize;		/* File size */
+                unsigned long org_clust;	/* File start cluster */
+                unsigned long curr_clust;	/* File current cluster */
+                unsigned long dsect; 		/* File current data sector */
+                unsigned char flag;			/* File status flags */
                 
 };
 template<typename OsModel_P,typename BlockMemory_P = typename OsModel_P::BlockMemory>
@@ -332,7 +348,7 @@ class SdFileSystemLibrary
                 ThisFATSecNum = b1.BPB_RsvdSecCnt + (FATOffset / b1.BPB_BytsPerSec);
                 ThisFATEntOffset = FATOffset % b1.BPB_BytsPerSec;
                 fd.read(buffer1,ThisFATSecNum);
-                return ThisFATEntOffset;
+                return buffer1[ThisFATEntOffset];//change into word. eg 16 bit or 32 bit. toask #osdev
 //-----------------------------------------------------------------------
                 }
                 void set_fat_entry(int N,unsigned int value) 
@@ -356,7 +372,10 @@ class SdFileSystemLibrary
                         BS_16 b2;
                         BS_32 b3;
                         BlockMemory fd;
-                        
+                        unsigned int index; 		/* Current read/write index number */
+                        unsigned long sclust;		/*start cluster	*/
+                        unsigned long clust; 		/* Current cluster */
+                        unsigned long sect;			/* Current sector */
 };
  
 }
