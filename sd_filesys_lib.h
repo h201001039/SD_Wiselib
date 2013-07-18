@@ -428,7 +428,7 @@ class SdFileSystemLibrary
 					clust = clst;						/* Current cluster */
 					sect = clst ? first_sector_of_cluster(clst) : dirbase;	/* Current sector */
 
-					return 1;	/* Seek succeeded */
+					return 1;	
 				}
 
 //-------------------------------------------------------------------------------------
