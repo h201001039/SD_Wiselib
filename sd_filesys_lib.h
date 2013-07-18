@@ -41,7 +41,7 @@ class File
                 }
                 size_t write(block_data_t *buf, size_t size) {
                 size_t s=size;
-                //Code goes here...
+                //Code goes here...need some changes
                 return s;       
                 }
                 size_t read(block_data_t *buf, size_t size) {
@@ -211,12 +211,12 @@ class SdFileSystemLibrary
                         
                        // printf("harsh\n");
                          int a=fd.read(buffer,0);
-                        //for(i=0;i<512;i++)
-                        //{
-                        //printf("%x  ",buffer[i]);
-                        //if(i%16==0 && i!=0 &&i!=16 || i==15)
-                        //printf("\n");
-                //}
+                        for(i=0;i<512;i++)
+                        {
+                        printf("%x  ",buffer[i]);
+                        if(i%16==0 && i!=0 &&i!=16 || i==15)
+                        printf("\n");
+                }
                         if(a==1)
                         {
                         printf("\nsuccesfull read\n");
@@ -458,7 +458,8 @@ class SdFileSystemLibrary
                         BPB b1;
                         BS_16 b2;
                         BS_32 b3;
-                        BlockMemory fd;
+                        BlockMemory fd
+;
                         unsigned int index; 		/* Current read/write index number */
                         unsigned long sclust;		/*start cluster	*/
                         unsigned long clust; 		/* Current cluster */
