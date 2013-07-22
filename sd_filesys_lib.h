@@ -175,7 +175,7 @@ class File
  
                         }
 //----------------------------------------------------------------------------------------                 
-                int pf_read (
+                long pf_read (
 					block_data_t* buff,
 					int btr
 				)
@@ -214,15 +214,15 @@ class File
 						}
 						rcnt = (unsigned int)(512 - (fptr % 512));		/* Get partial sector data from sector buffer */
 						if (rcnt > btr) rcnt = btr;
-						dr = fd.read(buff, sect);
-						for(i=0;i<100;i++)
-						printf("%c",buff[i]);
+						dr = fd.read(rbuff, dsect);
+						//for(i=0;i<700;i++)
+						//printf("%d ",buff[i]);
 						if (!dr) printf("error\n");
 						fptr += rcnt; rbuff += rcnt;			/* Update pointers and counters */
 						btr -= rcnt; 
 					}
 
-					return 1;
+					return remain;
 
 				//fr_abort:
 					//flag = 0;
@@ -579,11 +579,11 @@ class SdFileSystemLibrary
 					//printf("buffer2=%u index=%ld\n",buffer2,index);
 					if (res ==0 ) printf("res=%d\n",res);		/* Follow failed */
 					f.org_clust = LD_CLUST(dir1);			/* File start cluster */
-					//printf("f.org_clust=%ld\n",f.org_clust);
+					printf("f.org_clust=%ld\n",f.org_clust);
 					for(i=0;i<5;i++)
 					printf("%c ",dir1[i]);
 					f.fsize = LD_INT(dir1+28);	/* File size */
-					//printf("f.fsize=%ld\n",f.fsize);
+					printf("f.fsize=%ld\n",f.fsize);
 					f.fptr = 0;						/* File pointer */
 					f.flag = 1;
 

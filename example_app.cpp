@@ -8,7 +8,7 @@
 
 typedef wiselib::PCOsModel Os;
 typedef typename Os::block_data_t block_data_t;
-block_data_t buffer[512];
+block_data_t buffer[4000];
 class ExampleApplication
 {
    public:
@@ -24,10 +24,10 @@ class ExampleApplication
 		//wiselib::File<Os> x=f.open("abc.txt");
 		printf("return=%d\n",f.dir_rewind());
 		printf("return=%d\n",f.dir_next ());
-		wiselib::File<Os> x=f.open("HARSH");
+		wiselib::File<Os> x=f.open("HELLO");
 		debug_->debug("reading %d length from a file",x.pf_read(buffer,512));
 		//debug_->debug("writing %d length to a file",x.write(buffer,512));
-     for(i=0;i<100;i++)
+     for(i=0;i<512;i++)
      printf("%c",buffer[i]);
      }
       // --------------------------------------------------------------------
