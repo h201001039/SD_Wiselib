@@ -186,47 +186,39 @@ class File
 					long sect, remain;
 					int rcnt,i;
 					block_data_t cs, *rbuff = buff;
-					//FATFS *fs = FatFs;
 
 
-					//*br = 0;
-					//if (!fs) return FR_NOT_ENABLED;		/* Check file system */
-					//if (!(fs->flag & FA_OPENED))		/* Check if opened */
-						//return FR_NOT_OPENED;
 
 					remain = fsize - fptr;
 					if (btr > remain) btr = (int)remain;			/* Truncate btr by remaining bytes */
 					//printf("fptr=%ld btr=%d fsize=%ld org_clust=%d\n",fptr,btr,fsize,org_clust);
-					while (btr)	{									/* Repeat until all data transferred */
-						if ((fptr % 512) == 0) {				/* On the sector boundary? */
-							cs = (unsigned char)(fptr / 512 & (csize - 1));	/* Sector offset in the cluster */
-							if (!cs) {								/* On the cluster boundary? */
-								clst = (fptr == 0) ?			/* On the top of the file? */
+					while (btr)	{									
+						if ((fptr % 512) == 0) {				
+							cs = (unsigned char)(fptr / 512 & (csize - 1));	
+							if (!cs) {								
+								clst = (fptr == 0) ?			
 									org_clust : get_fat_entry(curr_clust);
 								if (clst <= 1) printf("error123");
-								curr_clust = clst;				/* Update current cluster */
+								curr_clust = clst;				
 							}
 							printf("curr_clust=%ld\n",curr_clust);
-							sect = first_sector_of_cluster(curr_clust);		/* Get current sector */
+							sect = first_sector_of_cluster(curr_clust);		
 							printf("sect=%ld\n",sect);
 							if (!sect) printf("error234");
 							dsect = sect + cs;
 						}
-						rcnt = (unsigned int)(512 - (fptr % 512));		/* Get partial sector data from sector buffer */
+						rcnt = (unsigned int)(512 - (fptr % 512));		
 						if (rcnt > btr) rcnt = btr;
 						dr = fd.read(rbuff, dsect);
 						//for(i=0;i<700;i++)
 						//printf("%d ",buff[i]);
 						if (!dr) printf("error\n");
-						fptr += rcnt; rbuff += rcnt;			/* Update pointers and counters */
+						fptr += rcnt; rbuff += rcnt;			
 						btr -= rcnt; 
 					}
 
 					return remain;
 
-				//fr_abort:
-					//flag = 0;
-					//return FR_DISK_ERR;
 				}
 
 //----------------------------------------------------------------------------------------
@@ -525,7 +517,7 @@ class SdFileSystemLibrary
 
 				int dir_find (char *name,int len)
 				{
-					//;
+					
 					//printf("harsh\n");
 					
 					int res,i,c;
@@ -539,7 +531,7 @@ class SdFileSystemLibrary
 						dir1 =(buffer2+((index % 16) * 32));
 						c = dir1[0];	/* First character */
 						//printf("c=%d\n",c);
-						if (c == 0) {  break; }	/* Reached to end of table */
+						if (c == 0) {  break; }	
 						if(c==0xE5)
 						{
 						res = dir_next();
@@ -577,14 +569,14 @@ class SdFileSystemLibrary
 					res=dir_find(name,len1);	
 					//dir =(buffer2+((index % 16) * 32));
 					//printf("buffer2=%u index=%ld\n",buffer2,index);
-					if (res ==0 ) printf("res=%d\n",res);		/* Follow failed */
-					f.org_clust = LD_CLUST(dir1);			/* File start cluster */
+					if (res ==0 ) printf("res=%d\n",res);		
+					f.org_clust = LD_CLUST(dir1);			
 					printf("f.org_clust=%ld\n",f.org_clust);
 					for(i=0;i<5;i++)
 					printf("%c ",dir1[i]);
-					f.fsize = LD_INT(dir1+28);	/* File size */
+					f.fsize = LD_INT(dir1+28);	
 					printf("f.fsize=%ld\n",f.fsize);
-					f.fptr = 0;						/* File pointer */
+					f.fptr = 0;						
 					f.flag = 1;
 
                 return f;
