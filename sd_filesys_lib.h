@@ -67,10 +67,6 @@ class File
                 //Code goes here...need some changes
                 return s;       
                 }
-                size_t read(block_data_t *buf, size_t size) {
-                
-                return size;
-                }
                 
                 int peek() {
                         //Code goes here...
@@ -175,7 +171,7 @@ class File
  
                         }
 //----------------------------------------------------------------------------------------                 
-                long pf_read (
+                long read (
 					block_data_t* buff,
 					int btr
 				)
