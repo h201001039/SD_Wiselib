@@ -14,15 +14,21 @@ class ExampleApplication
    public:
       void init( Os::AppMainParameter& value )
       {
+		  int i;
          debug_ = &wiselib::FacetProvider<Os, Os::Debug>::get_facet( value );
 
          debug_->debug( "Reading BIOS Stuff from SD card!" );
 		//typedef wiselib::ArduinoOsModel Os;
 		wiselib::SdFileSystemLibrary<Os> f;
 		f.init();
-		wiselib::File<Os> x=f.open("abc.txt");
-		debug_->debug("reading %d length from a file",x.read(buffer,512));
-		debug_->debug("writing %d length to a file",x.write(buffer,512));
+		//wiselib::File<Os> x=f.open("abc.txt");
+		printf("return=%d\n",f.dir_rewind());
+		printf("return=%d\n",f.dir_next ());
+		wiselib::File<Os> x=f.open("HARSH");
+		debug_->debug("reading %d length from a file",x.pf_read(buffer,512));
+		//debug_->debug("writing %d length to a file",x.write(buffer,512));
+     for(i=0;i<100;i++)
+     printf("%c",buffer[i]);
      }
       // --------------------------------------------------------------------
    private:
