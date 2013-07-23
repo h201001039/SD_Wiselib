@@ -8,7 +8,7 @@
 
 typedef wiselib::PCOsModel Os;
 typedef typename Os::block_data_t block_data_t;
-block_data_t buffer[4100];
+block_data_t buffer[2005];
 class ExampleApplication
 {
    public:
@@ -23,13 +23,25 @@ class ExampleApplication
 		f.init();
 		//wiselib::File<Os> x=f.open("abc.txt");
 		printf("return=%d\n",f.dir_rewind());
-		printf("return=%d\n",f.dir_next ());
+		printf("return=%d\n",f.dir_next());
 		wiselib::File<Os> x=f.open("HELLO");
-		debug_->debug("reading %d length from a file",x.read(buffer,2));
-				//debug_->debug("reading %d length from a file",x.read(buffer,10));
-		//debug_->debug("writing %d length to a file",x.write(buffer,512));
-     for(i=0;i<512;i++)
+		debug_->debug("reading %d length from a file",x.read(buffer,52));
+	for(i=0;i<52;i++)
      printf("%c",buffer[i]);
+     printf("\n");
+     for(i=0;i<52;i++)
+     printf("%d",buffer[i]);
+     printf("\n");
+		debug_->debug("reading %d length from a file",x.read(buffer,10));
+		for(i=0;i<10;i++)
+     printf("%c",buffer[i]);
+	printf("\n");
+	debug_->debug("reading %d length from a file",x.read(buffer,10));
+		for(i=0;i<10;i++)
+     printf("%c",buffer[i]);
+	printf("\n");
+		//debug_->debug("writing %d length to a file",x.write(buffer,512));
+     
      }
       // --------------------------------------------------------------------
    private:

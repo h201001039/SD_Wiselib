@@ -67,7 +67,33 @@ class File
                 //Code goes here...need some changes
                 return s;       
                 }
-                
+//-------------------------------------------------------------------------------------
+				/* Fill memory */
+				
+				void mem_set (block_data_t* dst, block_data_t *src, int cnt) {
+					while(cnt--)
+					{
+						*dst=*src;
+						dst++;
+						src++;
+						}
+				}
+
+//-------------------------------------------------------------------------------------
+				/* Compare memory to memory */
+				
+				int mem_cmp (const void* dst, const void* src, int cnt) {
+					const char *d = (const char *)dst, *s = (const char *)src;
+					int r = 0;
+					while (cnt-- && (r = *d++ - *s++) == 0) ;
+					//printf("r=%d\n",r);
+					return r;
+				}
+
+
+ 
+//-----------------------------------------------------------------------                       
+
                 int peek() {
                         //Code goes here...
                         //It will return the next byte.This will be differ from  
@@ -180,17 +206,23 @@ class File
 					int dr;
 					int clst;
 					long sect, remain;
-					int rcnt,i;
-					block_data_t cs, *rbuff = buff;
+					int rcnt,i,ret;
+					block_data_t cs;
+					block_data_t inter[bps];
+					//printf("%ld\n",fptr);
 
 
-
+					//printf("fsize=%ld\n",fsize);
 					remain = fsize - fptr;
+					while(remain<=0)
+					return -1;
 					if (btr > remain) btr = (int)remain;			/* Truncate btr by remaining bytes */
 					//printf("fptr=%ld btr=%d fsize=%ld org_clust=%d\n",fptr,btr,fsize,org_clust);
+					ret=btr;
+					//printf("%ld\n",bps);
 					while (btr)	{									
-						if ((fptr % 512) == 0) {				
-							cs = (unsigned char)(fptr / 512 & (csize - 1));	
+						if ((fptr % bps) == 0) {				
+							cs = (unsigned char)(fptr / bps & (csize - 1));	
 							if (!cs) {								
 								clst = (fptr == 0) ?			
 									org_clust : get_fat_entry(curr_clust);
@@ -203,17 +235,18 @@ class File
 							if (!sect) printf("error234");
 							dsect = sect + cs;
 						}
-						rcnt = (unsigned int)(512 - (fptr % 512));		
+						rcnt = (unsigned int)(bps - (fptr % bps));		
 						if (rcnt > btr) rcnt = btr;
-						dr = fd.read(rbuff, dsect);
+						dr = fd.read(inter, dsect);
+						mem_set(buff,inter+(fptr%512),rcnt);
 						//for(i=0;i<700;i++)
 						//printf("%d ",buff[i]);
 						if (!dr) printf("error\n");
-						fptr += rcnt; rbuff += rcnt;			
+						fptr += rcnt; buff += rcnt;			
 						btr -= rcnt; 
 					}
-
-					return remain;
+					//printf("fptr=%ld\n",fptr);
+					return ret;
 
 				}
 

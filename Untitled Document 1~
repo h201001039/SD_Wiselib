@@ -1,0 +1,16 @@
+
+Harsh and I agreed on the following action items (by thursday or friday, then we will have a skype about it):
+
+DONE- Integrate the code with the wiselib makefile architecture (so it can be put in generic_apps and compiled the usual way)
+    - Test/extend the read method to support several edge cases like:
+DONE- Reading files that are bigger than sector/cluster size
+    - Issuing multiple read() calls to a file (i.e. file is X bytes large where X > buffer size,
+      call read() multiple times to read it bit by bit).
+      Here also keeping corner cases wrt. cluster size might be useful (i.e. buffer size = cluster size,
+      buffer size something different, buffer size = cluster size - 1, etc...)
+    - What happens if i read() on a file that already is at end?
+      How does the user know when he has read the file completely (shouldnt need any extra methods, just document
+      what happens to the return value of read()).
+
+    - Also keep in mind that for the midterms we agreed to have the basic operations available for file writing, that is allocation and   	freeing of clusters.
+
