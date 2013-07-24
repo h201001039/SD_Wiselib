@@ -24,9 +24,9 @@ class ExampleApplication
 		//wiselib::File<Os> x=f.open("abc.txt");
 		printf("return=%d\n",f.dir_rewind());
 		printf("return=%d\n",f.dir_next());
-		wiselib::File<Os> x=f.open("HELLO");
-		debug_->debug("reading %d length from a file",x.read(buffer,52));
-	for(i=0;i<52;i++)
+		wiselib::File<Os> x=f.open("HARSH");
+		debug_->debug("reading %d length from a file",x.read(buffer,1000));
+	for(i=0;i<1000;i++)
      printf("%c",buffer[i]);
      printf("\n");
      for(i=0;i<52;i++)

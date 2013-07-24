@@ -48,6 +48,12 @@ class File
                 unsigned long curr_clust;	/* File current cluster */
                 unsigned long dsect; 		/* File current data sector */
                 unsigned char flag;			/* File status flags */
+                
+                enum {
+				SUCCESS = OsModel::SUCCESS,
+				ERR_UNSPEC = OsModel::ERR_UNSPEC
+			};
+
 
                 File(char* n, unsigned int cluster_no, BlockMemory& bm) : fd(bm) {
                 //strncpy(name_, n, 12);
@@ -160,7 +166,7 @@ class File
                         //is computed as follows:
                 unsigned int first_sector_of_cluster(unsigned int N )
                 {
-					printf("database=%ld\n",database);
+					//printf("database=%ld\n",database);
                 return ((N - 2) * csize) + database;
                 }
 //-----------------------------------------------------------------------
@@ -212,10 +218,10 @@ class File
 					//printf("%ld\n",fptr);
 
 
-					//printf("fsize=%ld\n",fsize);
+					//printf("csize =%ld fsize=%ld\n",csize,fsize);
 					remain = fsize - fptr;
 					while(remain<=0)
-					return -1;
+					return -2;
 					if (btr > remain) btr = (int)remain;			/* Truncate btr by remaining bytes */
 					//printf("fptr=%ld btr=%d fsize=%ld org_clust=%d\n",fptr,btr,fsize,org_clust);
 					ret=btr;
@@ -226,22 +232,22 @@ class File
 							if (!cs) {								
 								clst = (fptr == 0) ?			
 									org_clust : get_fat_entry(curr_clust);
-								if (clst <= 1) printf("error123");
+								if (clst <= 1) return ERR_UNSPEC;
 								curr_clust = clst;				
 							}
-							printf("curr_clust=%ld\n",curr_clust);
+						//	printf("curr_clust=%ld\n",curr_clust);
 							sect = first_sector_of_cluster(curr_clust);		
-							printf("sect=%ld\n",sect);
-							if (!sect) printf("error234");
+						//	printf("sect=%ld\n",sect);
+							if (!sect) return ERR_UNSPEC;
 							dsect = sect + cs;
 						}
 						rcnt = (unsigned int)(bps - (fptr % bps));		
 						if (rcnt > btr) rcnt = btr;
 						dr = fd.read(inter, dsect);
-						mem_set(buff,inter+(fptr%512),rcnt);
+						mem_set(buff,inter+(fptr%bps),rcnt);
 						//for(i=0;i<700;i++)
 						//printf("%d ",buff[i]);
-						if (!dr) printf("error\n");
+						if (dr) return ERR_UNSPEC;
 						fptr += rcnt; buff += rcnt;			
 						btr -= rcnt; 
 					}
@@ -380,7 +386,7 @@ class SdFileSystemLibrary
                         TotSec=0;
                         DataSec=0;
                         int i=0;
-                        fd.init("/home/mindfuck/test.img");
+                        fd.init("/home/mindfuck/disk123.img");
                         for(i=0;i<512;i++)
                         buffer[i]=0;
                          int a=fd.read(buffer,0);
@@ -390,7 +396,7 @@ class SdFileSystemLibrary
                         if(i%16==0 && i!=0 &&i!=16 || i==15)
                         printf("\n");
                 }
-                        if(a==1)
+                        if(a==SUCCESS)
                         {
                         printf("\nsuccesfull read\n");
                         sclust=0;
@@ -492,8 +498,8 @@ class SdFileSystemLibrary
 				i = index + 1;
 				if (!i || !sect)	
 					return 0;
-
-				if (!(i % 16)) {		/* Sector changed? */
+				int mod=(bps/32);
+				if (!(i % mod)) {		/* Sector changed? */
 					sect++;			/* Next sector */
 
 					if (clust == 0) {	
@@ -501,7 +507,7 @@ class SdFileSystemLibrary
 							return 0;
 					}
 					else {					
-						if (((i / 16) & (csize-1)) == 0) {	/* Cluster changed? */
+						if (((i / mod) & (csize-1)) == 0) {	/* Cluster changed? */
 							clst = get_fat_entry(clust,buffer1);		
 							if (clst <= 1) return 0;
 							if (clst >= n_fatent)		
