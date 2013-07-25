@@ -54,7 +54,7 @@ class File
 				ERR_UNSPEC = OsModel::ERR_UNSPEC
 			};
 
-
+//------------------------------------------------------------------------
                 File(char* n, unsigned int cluster_no, BlockMemory& bm) : fd(bm) {
                 //strncpy(name_, n, 12);
                 int i=0;
@@ -369,7 +369,7 @@ class SdFileSystemLibrary
 
 				/* length */
 				
-				int len(char *name)
+				int len(const char *name)
 				{
 				int i=0;
 					while(*name!=0)
@@ -381,6 +381,24 @@ class SdFileSystemLibrary
 					}
 
 //-------------------------------------------------------------------------------------
+                
+				void to_upper( char *src)
+				{
+					int i;
+					char x;
+				while((*src)!=0)
+				{
+					//printf("%d",*src);
+					if(*src >=97 &&	 *src <=122)
+					{
+						//printf("%c",*src);
+						 
+						*src-=32;
+					}
+					src++;
+					}	
+				}
+//-------------------------------------------------------------------------------------
                 void init() {
                         CountofClusters=0;
                         TotSec=0;
@@ -390,66 +408,66 @@ class SdFileSystemLibrary
                         for(i=0;i<512;i++)
                         buffer[i]=0;
                          int a=fd.read(buffer,0);
-                        for(i=0;i<512;i++)
-                        {
-                        printf("%x  ",buffer[i]);
-                        if(i%16==0 && i!=0 &&i!=16 || i==15)
-                        printf("\n");
-                }
+                        //for(i=0;i<512;i++)
+                        //{
+                        //printf("%x  ",buffer[i]);
+                        //if(i%16==0 && i!=0 &&i!=16 || i==15)
+                        //printf("\n");
+                //}
                         if(a==SUCCESS)
                         {
-                        printf("\nsuccesfull read\n");
+                        printf("succesfull read\n\n");
                         sclust=0;
                         b1.BPB_BytsPerSec=LD_INT(buffer+11);
                         bps=b1.BPB_BytsPerSec;
-                        printf("b1.BPB_BytsPerSec=%d\n",b1.BPB_BytsPerSec);
+                        //printf("b1.BPB_BytsPerSec=%d\n",b1.BPB_BytsPerSec);
                         b1.BPB_SecPerClus=buffer[13];
                         csize=b1.BPB_SecPerClus;
-                        printf("b1.BPB_SecPerClus=%d\n",b1.BPB_SecPerClus);
+                        //printf("b1.BPB_SecPerClus=%d\n",b1.BPB_SecPerClus);
                         b1.BPB_RsvdSecCnt=LD_INT(buffer+14);;
-                        printf("b1.BPB_RsvdSecCnt=%d\n",b1.BPB_RsvdSecCnt);
+                        //printf("b1.BPB_RsvdSecCnt=%d\n",b1.BPB_RsvdSecCnt);
                         fatbase=b1.BPB_RsvdSecCnt;
                         b1.BPB_NumFATs=buffer[16];
-                        printf("b1.BPB_NumFATs=%d\n",b1.BPB_NumFATs);
+                        //printf("b1.BPB_NumFATs=%d\n",b1.BPB_NumFATs);
                         b1.BPB_RootEntCnt=LD_INT(buffer+17);
                         n_rootdir=b1.BPB_RootEntCnt;
-                        printf("b1.BPB_RootEntCnt=%d\n",b1.BPB_RootEntCnt);
+                        //printf("b1.BPB_RootEntCnt=%d\n",b1.BPB_RootEntCnt);
                         b1.BPB_TotSec16=LD_INT(buffer+19);
-                        printf("b1.BPB_TotSec16=%d\n",b1.BPB_TotSec16);
+                        //printf("b1.BPB_TotSec16=%d\n",b1.BPB_TotSec16);
                         b1.BPB_FATSz16=LD_INT(buffer+22);
-                        printf("b1.BPB_FATSz16=%d\n",b1.BPB_FATSz16);
+                        //printf("b1.BPB_FATSz16=%d\n",b1.BPB_FATSz16);
                         b1.BPB_TotSec32=LD_INT(buffer+32);
-                        printf("b1.BPB_TotSec32=%d\n  ",b1.BPB_TotSec32);
+                        //printf("b1.BPB_TotSec32=%d\n  ",b1.BPB_TotSec32);
                         b3.BPB_FATSz32=LD_INT(buffer+36);
-                        printf("b3.BPB_FATSz32=%d\n ",b3.BPB_FATSz32);
+                        //printf("b3.BPB_FATSz32=%d\n ",b3.BPB_FATSz32);
                         b3.BPB_RootClus=LD_INT(buffer+44);
-                        printf("b3.BPB_RootClus=%ld\n",b3.BPB_RootClus);
+                        //printf("b3.BPB_RootClus=%ld\n",b3.BPB_RootClus);
                         if(b1.BPB_FATSz16 != 0)
                         FATSz = b1.BPB_FATSz16;
                         else
                         FATSz = b3.BPB_FATSz32;
-                        printf("FATSz=%d\n",FATSz);
+                        //printf("FATSz=%d\n",FATSz);
                         int totsec;
                         if(b1.BPB_TotSec16 != 0)
                         totsec = b1.BPB_TotSec16;
                         else
                         totsec = b1.BPB_TotSec32;
-                        printf("totsec=%d\n",totsec);
+                        //printf("totsec=%d\n",totsec);
                         RootDirSectors = ((b1.BPB_RootEntCnt * 32) + (b1.BPB_BytsPerSec - 1)) / b1.BPB_BytsPerSec;
-                        printf("RootDirSectors=%ld\n",RootDirSectors);
+                        //printf("RootDirSectors=%ld\n",RootDirSectors);
                         database=fatbase+(b1.BPB_NumFATs*FATSz)+RootDirSectors;
-                        printf("database=%ld\n",database);
+                        //printf("database=%ld\n",database);
                         DataSec = totsec - (fatbase + (b1.BPB_NumFATs * FATSz) + RootDirSectors);
-                        printf("DataSec=%ld\n",DataSec);
+                        //printf("DataSec=%ld\n",DataSec);
                         CountofClusters = DataSec / csize;
-                        printf("CountofClusters=%ld\n",CountofClusters);
+                        //printf("CountofClusters=%ld\n",CountofClusters);
                         n_fatent=CountofClusters;
                         if(fat_type()==16)
                         FirstRootDirSecNum = fatbase + (b1.BPB_NumFATs * FATSz);
                         else 
                         FirstRootDirSecNum = b3.BPB_RootClus;
                         dirbase=FirstRootDirSecNum;
-                        printf("FirstRootDirSecNum=%ld\n",FirstRootDirSecNum);
+                        //printf("FirstRootDirSecNum=%ld\n",FirstRootDirSecNum);
                         }
                         else
                         {
@@ -535,8 +553,8 @@ class SdFileSystemLibrary
 					//printf("sclust=%ld\n",sclust);
 					if (clst == 1 || clst >= n_fatent)	/* Check start cluster range */
 					{
-					printf("hello sir\n");
-						return 0;//change
+					//printf("hello sir\n");
+						return ERR_UNSPEC;//change
 					}
 					if ( !clst && fat_type()==32)//need changeds 
 					/* Replace cluster# 0 with root cluster# if in FAT32 */
@@ -563,6 +581,8 @@ class SdFileSystemLibrary
 
 					do {
 						res=fd.read(buffer2,sect);
+						if(res==ERR_UNSPEC)
+						return ERR_UNSPEC;
 						dir1 =(buffer2+((index % 16) * 32));
 						c = dir1[0];	/* First character */
 						//printf("c=%d\n",c);
@@ -572,15 +592,15 @@ class SdFileSystemLibrary
 						res = dir_next();
 						continue;
 					}
-							for(i=0;i<11;i++)
-							printf("%c",dir1[i]);
-							printf("\n");
+							//for(i=0;i<11;i++)
+							//printf("%c",dir1[i]);
+							//printf("\n");
 							//break;
 							if(!mem_cmp(dir1, name, len))
 							{
-							for(i=0;i<5;i++)
-							printf("%c ",dir1[i]);
-							printf("\n");
+							//for(i=0;i<5;i++)
+							//printf("%c ",dir1[i]);
+							//printf("\n");
 							break;
 						}
 						res = dir_next();					/* Next entry */
@@ -589,28 +609,39 @@ class SdFileSystemLibrary
 					return res;
 				}
 //--------------------------------------------------------------------------------
-				File<OsModel> open(char* name)
+				File<OsModel> open(const char* name)
                 {
                 //search for the file in root entries and if found create file object 
                 //pointing to that clusture otherwise create new file and return file object
                 //pointing to new clusture
-				int res,i;
+				int res,i=0;
+				char name1[15];
 				block_data_t buf;
+				int len1=len(name);
 				//block_data_t *dir;
+				while(*(name+i)!=0)
+				{
+				name1[i]=*(name+i);
+				i++;
+				}
+				name1[i]=0;
 				dir1=&buf;
-                File<OsModel> f(name,0, fd);
-                					f.flag = 0;
-                	int len1=len(name);				
-					res=dir_find(name,len1);	
+				//printf("%s\n",name);
+				//printf("hello %s\n",name1);
+                to_upper(name1);
+                File<OsModel> f(name1,0, fd);
+                f.flag = 0;
+                					
+					res=dir_find(name1,len1);	
 					//dir =(buffer2+((index % 16) * 32));
 					//printf("buffer2=%u index=%ld\n",buffer2,index);
-					if (res ==0 ) printf("res=%d\n",res);		
+					//if (res ==0 ) printf("res=%d\n",res);		
 					f.org_clust = LD_CLUST(dir1);			
-					printf("f.org_clust=%ld\n",f.org_clust);
-					for(i=0;i<5;i++)
-					printf("%c ",dir1[i]);
+					//printf("f.org_clust=%ld\n",f.org_clust);
+					//for(i=0;i<5;i++)
+					//printf("%c ",dir1[i]);
 					f.fsize = LD_INT(dir1+28);	
-					printf("f.fsize=%ld\n",f.fsize);
+					//printf("f.fsize=%ld\n",f.fsize);
 					f.fptr = 0;						
 					f.flag = 1;
 
