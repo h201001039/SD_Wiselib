@@ -1,20 +1,26 @@
+#define pc
+#define USE_FILE_BLOCK_MEMORY 1
 /*
  * Simple Wiselib Example
  */
-#include "pc_os_model.h"
-#include "pc_wiselib_application.h"
+#include "external_interface/external_interface.h"
+#include "algorithms/routing/tree/tree_routing.h"
+#include "external_interface/pc/pc_os_model.h"
+#include "external_interface/pc/pc_wiselib_application.h"
 #include "external_interface/external_interface.h"
 #include "sd_filesys_lib.h"
 
 typedef wiselib::PCOsModel Os;
 typedef typename Os::block_data_t block_data_t;
-block_data_t buffer[2005];
+block_data_t buffer[5005];
 class ExampleApplication
 {
    public:
       void init( Os::AppMainParameter& value )
       {
 		  int i,len;
+  
+
          debug_ = &wiselib::FacetProvider<Os, Os::Debug>::get_facet( value );
 
          debug_->debug( "Reading BIOS Stuff from SD card!" );
@@ -25,7 +31,7 @@ class ExampleApplication
 		//printf("return=%d\n",f.dir_rewind());
 		//printf("return=%d\n",f.dir_next());
 		wiselib::File<Os> x=f.open("harsh");
-		len=x.read(buffer,1000);
+		len=x.read(buffer,5000);
 		if(len>0)
 		{
  debug_->debug("reading %d from the file",len);
